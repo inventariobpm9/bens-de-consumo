@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Acesso — Bens de Consumo | 9º BPM</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #ff7043;
+    --accent-dim: rgba(255,112,67,0.15);
+    --accent-border: rgba(255,112,67,0.4);
+    --bg: #050505;
+    --surface: #0d0d0d;
+    --border: #1e1e1e;
+    --text: #d8d8d8;
+    --text-muted: #555;
+    --green: #4caf50;
+    --danger: #ef5350;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%; background: var(--bg); color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,112,67,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,112,67,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove { from { background-position: 0 0; } to { background-position: 40px 40px; } }
+
+  .container {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 420px; padding: 24px 20px;
+  }
+
+  .logo-area { text-align: center; margin-bottom: 32px; animation: fadeUp .6s ease both; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+  .logo-emblem {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--accent-dim); border: 2px solid var(--accent-border);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    box-shadow: 0 0 32px rgba(255,112,67,0.15);
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 32px rgba(255,112,67,.15)} 50%{box-shadow:0 0 52px rgba(255,112,67,.3)} }
+  .logo-badge {
+    display: inline-block;
+    border: 1px solid var(--accent-border);
+    background: var(--accent-dim);
+    padding: 5px 16px; border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .logo-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 30px; font-weight: 700; letter-spacing: 2px;
+    color: #fff; line-height: 1.1;
+    text-shadow: 0 0 24px rgba(255,112,67,0.25);
+  }
+  .logo-sub { font-size: 12px; color: var(--text-muted); margin-top: 5px; letter-spacing: 1px; }
+
+  .terminal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: fadeUp .6s .15s ease both;
+  }
+  .terminal-bar {
+    background: #0a0a0a; border-bottom: 1px solid var(--border);
+    padding: 9px 14px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dot-r { background: #3a1a1a; }
+  .dot-y { background: #3a3a1a; }
+  .dot-g { background: #1a3a1a; }
+  .terminal-title { margin-left: 6px; font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-muted); }
+  .terminal-cursor { display: inline-block; width: 7px; height: 12px; background: var(--accent); margin-left: 4px; animation: blink 1s step-end infinite; vertical-align: middle; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .terminal-body { padding: 24px 22px 28px; }
+
+  .prompt-line {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px; color: var(--text-muted);
+    margin-bottom: 22px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .prompt-line::before { content: '›'; color: var(--accent); font-size: 16px; }
+
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block; font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; color: var(--text-muted);
+    margin-bottom: 8px; text-transform: uppercase;
+  }
+  .field-wrap { position: relative; }
+  .field-wrap input {
+    width: 100%; padding: 13px 14px;
+    background: #080808; border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text);
+    font-family: 'Share Tech Mono', monospace; font-size: 15px;
+    letter-spacing: 1px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+  .field-wrap input:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+  .field-wrap input::placeholder { color: #252525; letter-spacing: 0; }
+
+  .toggle-pass {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px;
+    transition: color 0.2s;
+  }
+  .toggle-pass:hover { color: var(--accent); }
+
+  .error-msg {
+    background: rgba(239,83,80,0.08); border: 1px solid rgba(239,83,80,0.25);
+    border-left: 3px solid var(--danger);
+    border-radius: 6px; padding: 11px 14px; margin-bottom: 18px;
+    font-family: 'Share Tech Mono', monospace; font-size: 12px;
+    color: #ef9a9a; display: none; letter-spacing: 0.5px;
+    animation: slideIn 0.2s ease;
+  }
+  .error-msg.show { display: block; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+  .btn-login {
+    width: 100%; padding: 15px;
+    background: linear-gradient(135deg, #bf360c, #e64a19, #ff7043);
+    background-size: 200% 100%;
+    border: none; border-radius: 6px; color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; cursor: pointer;
+    transition: background-position 0.3s, opacity 0.2s, transform 0.1s;
+    box-shadow: 0 4px 20px rgba(230,74,25,0.35);
+  }
+  .btn-login:hover { background-position: 100% 0; }
+  .btn-login:active { transform: scale(0.98); }
+  .btn-login:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .status-line {
+    margin-top: 20px; text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse2 2s infinite; }
+  @keyframes pulse2 { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.82); z-index:999; align-items:center; justify-content:center; flex-direction:column; gap:14px; }
+  .overlay.show { display:flex; }
+  .spinner { width:38px; height:38px; border:2px solid #1a1a1a; border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .overlay-text { font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--text-muted); letter-spacing:1px; }
+
+  .footer-text {
+    text-align: center; margin-top: 22px;
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    color: #1e1e1e; letter-spacing: 1.5px; text-transform: uppercase;
+    animation: fadeUp .6s .3s ease both;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo-area">
+    <div class="logo-emblem">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#ff7043" stroke-width="1.5">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <div class="logo-badge">9º BPM — P4</div>
+    <div class="logo-title">BENS DE CONSUMO</div>
+    <div class="logo-sub">SISTEMA DE CONTROLE DE ESTOQUE</div>
+  </div>
+
+  <div class="terminal-box">
+    <div class="terminal-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <div class="terminal-title">auth_consumo.sh — acesso restrito<span class="terminal-cursor"></span></div>
+    </div>
+    <div class="terminal-body">
+      <div class="prompt-line">identificação obrigatória para acesso ao sistema</div>
+
+      <div class="error-msg" id="errorMsg"></div>
+
+      <div class="field">
+        <label>Matrícula</label>
+        <div class="field-wrap">
+          <input type="text" id="matricula" placeholder="000000"
+            autocomplete="username" autocapitalize="characters" spellcheck="false"
+            onkeydown="onEnter(event)">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Senha</label>
+        <div class="field-wrap">
+          <input type="password" id="senha" placeholder="••••••••"
+            autocomplete="current-password" onkeydown="onEnter(event)"
+            style="padding-right:44px">
+          <button class="toggle-pass" type="button" onclick="toggleSenha()" aria-label="Mostrar senha">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="eyeIcon">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-login" id="btnLogin" onclick="fazerLogin()">ACESSAR SISTEMA</button>
+
+      <div class="status-line">
+        <div class="status-dot"></div>
+        sistema operacional
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-text">POLÍCIA MILITAR DO ESTADO DE RONDÔNIA</div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="spinner"></div>
+  <div class="overlay-text">AUTENTICANDO...</div>
+</div>
+
+<script src="config.js"></script>
+<script>
+  // Redireciona se já logado
+  window.addEventListener('load', () => {
+    const s = bcSessao.carregar();
+    if (s) window.location.href = 'dashboard.html';
+    document.getElementById('matricula').focus();
+  });
+
+  function onEnter(e) { if (e.key === 'Enter') fazerLogin(); }
+
+  function toggleSenha() {
+    const inp  = document.getElementById('senha');
+    const icon = document.getElementById('eyeIcon');
+    if (inp.type === 'password') {
+      inp.type = 'text';
+      icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+      inp.type = 'password';
+      icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+  }
+
+  async function fazerLogin() {
+    const matricula = document.getElementById('matricula').value.trim().toUpperCase();
+    const senha     = document.getElementById('senha').value;
+    const errEl     = document.getElementById('errorMsg');
+    errEl.classList.remove('show');
+
+    if (!matricula || !senha) {
+      errEl.textContent = '⚠ Preencha a matrícula e a senha.';
+      errEl.classList.add('show'); return;
+    }
+
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('btnLogin').disabled = true;
+
+    try {
+      const res = await bcApi.login(matricula, senha);
+
+      if (res && res.sucesso && res.token) {
+        bcSessao.salvar(res.token, {
+          matricula:  res.matricula,
+          nomeGuerra: res.nomeGuerra,
+          perfil:     res.perfil
+        });
+        window.location.href = 'dashboard.html';
+      } else {
+        document.getElementById('overlay').classList.remove('show');
+        errEl.textContent = res?.mensagem || '⚠ Matrícula ou senha incorretos.';
+        errEl.classList.add('show');
+        document.getElementById('btnLogin').disabled = false;
+        document.getElementById('senha').value = '';
+        document.getElementById('senha').focus();
+      }
+    } catch (e) {
+      document.getElementById('overlay').classList.remove('show');
+      errEl.textContent = '⚠ Erro de conexão. Tente novamente.';
+      errEl.classList.add('show');
+      document.getElementById('btnLogin').disabled = false;
+    }
+  }
+</script>
+</body>
+</html>
