@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bens de Consumo — 9º BPM P4</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060606;--surface:#0d0d0d;--surface2:#111;--border:#1c1c1c;
+  --ac:#ff7043;--ac2:#bf360c;--ac-dim:rgba(255,112,67,.13);--ac-bd:rgba(255,112,67,.32);
+  --txt:#d8d8d8;--muted:#444;--green:#4caf50;--mono:'Share Tech Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;overflow-x:hidden}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(255,112,67,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,112,67,.03) 1px,transparent 1px);
+  background-size:48px 48px;animation:gridDrift 25s linear infinite;pointer-events:none;z-index:0;
+}
+@keyframes gridDrift{from{background-position:0 0}to{background-position:48px 48px}}
+body::after{
+  content:'';position:fixed;width:600px;height:600px;border-radius:50%;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(191,54,12,.08),transparent 70%);
+  pointer-events:none;z-index:0;animation:glowPulse 4s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}}
+.wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;}
+.header{text-align:center;margin-bottom:44px;animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.shield{width:80px;height:80px;border-radius:50%;margin:0 auto 20px;background:var(--ac-dim);border:2px solid var(--ac-bd);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(255,112,67,.2),0 0 0 8px rgba(255,112,67,.04);animation:shieldPulse 3s ease-in-out infinite;}
+@keyframes shieldPulse{0%,100%{box-shadow:0 0 40px rgba(255,112,67,.2),0 0 0 8px rgba(255,112,67,.04)}50%{box-shadow:0 0 60px rgba(255,112,67,.35),0 0 0 12px rgba(255,112,67,.07)}}
+.badge{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--ac);background:var(--ac-dim);border:1px solid var(--ac-bd);padding:4px 14px;border-radius:3px;margin-bottom:12px;text-transform:uppercase;}
+.sys-title{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:800;letter-spacing:2px;color:#fff;line-height:1;text-shadow:0 0 30px rgba(255,112,67,.3);}
+.sys-sub{font-size:12px;color:var(--muted);margin-top:6px;letter-spacing:1.5px;font-family:var(--mono)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 0 1px rgba(255,112,67,.05);animation:fadeUp .7s .15s ease both;}
+.term-bar{background:#080808;border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px;}
+.dot{width:9px;height:9px;border-radius:50%}.dot-r{background:#3a1a1a}.dot-y{background:#3a3a1a}.dot-g{background:#1a3a1a}
+.term-lbl{font-family:var(--mono);font-size:10px;color:var(--muted);margin-left:4px}
+.cursor{display:inline-block;width:6px;height:11px;background:var(--ac);margin-left:3px;vertical-align:middle;animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0}}
+.card-body{padding:28px 26px 32px}
+.status-row{display:flex;align-items:center;gap:8px;margin-bottom:22px;font-family:var(--mono);font-size:10px;color:var(--muted);}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:statusPulse 2s ease-in-out infinite;}
+@keyframes statusPulse{0%,100%{opacity:1}50%{opacity:.3}}
+.desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid var(--border);}
+.desc strong{color:var(--txt);font-weight:600}
+.btn-access{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:17px;background:linear-gradient(135deg,var(--ac2),#e64a19,var(--ac));background-size:200% 100%;border:none;border-radius:8px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all .3s;box-shadow:0 6px 24px rgba(230,74,25,.35);}
+.btn-access:hover{background-position:100% 0;box-shadow:0 10px 36px rgba(255,112,67,.5);transform:translateY(-2px);}
+.btn-access:active{transform:translateY(0)}
+.sep{height:1px;background:var(--border);margin:22px 0}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.feat{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;}
+.feat-ico{font-size:16px;flex-shrink:0}
+.feat-txt{font-size:11px;color:var(--muted);line-height:1.4}
+.feat-txt strong{color:var(--txt);display:block;font-size:12px;margin-bottom:1px}
+.footer{margin-top:28px;text-align:center;font-family:var(--mono);font-size:9px;color:#222;letter-spacing:1.5px;text-transform:uppercase;animation:fadeUp .7s .3s ease both;}
+@media(max-width:480px){.sys-title{font-size:28px}.card-body{padding:22px 18px 26px}.features{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="shield">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#ff7043" stroke-width="1.5">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <div class="badge">9º BPM — P4 · Rondônia</div>
+    <div class="sys-title">BENS DE CONSUMO</div>
+    <div class="sys-sub">SISTEMA DE CONTROLE DE ESTOQUE</div>
+  </div>
+
+  <div class="card">
+    <div class="term-bar">
+      <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+      <div class="term-lbl">consumo_acesso.sh<span class="cursor"></span></div>
+    </div>
+    <div class="card-body">
+      <div class="status-row">
+        <div class="status-dot"></div>
+        sistema operacional · acesso restrito
+      </div>
+      <div class="desc">
+        Controle de <strong>entradas e saídas</strong> de materiais de consumo do 9º BPM.
+        Registre movimentações, acompanhe alertas de estoque e gere memória de cálculo por produto.
+      </div>
+      <!-- ✅ Agora aponta para login.html (GitHub Pages) -->
+      <a class="btn-access" href="login.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+          <polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+        </svg>
+        ACESSAR SISTEMA
+      </a>
+      <div class="sep"></div>
+      <div class="features">
+        <div class="feat"><div class="feat-ico">📥</div><div class="feat-txt"><strong>Entradas</strong>Recebimento de materiais</div></div>
+        <div class="feat"><div class="feat-ico">📤</div><div class="feat-txt"><strong>Saídas</strong>Retirada por setor</div></div>
+        <div class="feat"><div class="feat-ico">⚠️</div><div class="feat-txt"><strong>Alertas</strong>Estoque abaixo do mínimo</div></div>
+        <div class="feat"><div class="feat-ico">📊</div><div class="feat-txt"><strong>Memória</strong>Cálculo mensal/anual</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Polícia Militar do Estado de Rondônia · 9º BPM · P4</div>
+</div>
+
+<script src="config.js"></script>
+<script>
+  // Se já logado, vai direto pro dashboard
+  window.addEventListener('load', () => {
+    const s = bcSessao.carregar();
+    if (s) window.location.href = 'dashboard.html';
+  });
+</script>
+</body>
+</html>
